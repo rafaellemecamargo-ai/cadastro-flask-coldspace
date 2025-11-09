@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro Inteligente</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+      <h1>Cadastro de Usuários</h1>
+
+      <form method="post" action="/adicionar" class="form">
+          <input name="nome" placeholder="Nome" required>
+          <input name="idade" type="number" placeholder="Idade" required>
+          <button type="submit">Adicionar</button>
+      </form>
+
+      <ul class="list">
+          {% for u in usuarios %}
+              <li>
+                  <span class="user">{{ u.nome }} ({{ u.idade }} anos)</span>
+                  <a class="delete" href="/deletar/{{ u.id }}">🗑️</a>
+              </li>
+          {% else %}
+              <li>Nenhum usuário cadastrado.</li>
+          {% endfor %}
+      </ul>
+
+      <footer>
+        <p>Projeto de integração: Arquitetura, SO, Banco de Dados e Redes.</p>
+      </footer>
+    </div>
+</body>
+</html>
