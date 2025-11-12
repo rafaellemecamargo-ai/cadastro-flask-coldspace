@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Meus Pedidos</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Meus Pedidos</h1>
+        <p><a href="/logout">Logout</a> | <a href="/">Voltar para a Home</a></p>
+        <ul class="list">
+        {% for pedido in pedidos %}
+            <li>
+                <span class="user">Pedido #{{ pedido.id }} ({{ pedido.data_pedido.strftime('%d/%m/%Y %H:%M') }})</span>
+                <div>
+                    Status: **{{ pedido.status }}**
+                    <a class="edit" href="/pedido/{{ pedido.id }}">Detalhes</a>
+                </div>
+            </li>
+            {% else %}
+            <li>Você não tem nenhum pedido.</li>
+        {% endfor %}
+        </ul>
+        <footer>
+            <p>Projeto de integração: Arquitetura, SO, Banco de Dados e Redes.</p>
+        </footer>
+    </div>
+</body>
+</html>

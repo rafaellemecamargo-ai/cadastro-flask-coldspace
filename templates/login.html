@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Login de Acesso</h1>
+        <form method="post" class="form" style="flex-direction: column;">
+            {% if erro %}
+                <p style="color: red; text-align: center;">{{ erro }}</p>
+            {% endif %}
+            <input name="email" type="email" placeholder="Email" required>
+            <input name="senha" type="password" placeholder="Senha" required>
+            <button type="submit" style="margin-top: 10px;">Entrar</button>
+        </form>
+        <p style="text-align: center;"><a href="/">← Voltar para a Home</a></p>
+        <p style="text-align: center; font-size: 14px;">Usuário de teste: **admin@site.com** | Senha: **123**</p>
+    </div>
+</body>
+</html>

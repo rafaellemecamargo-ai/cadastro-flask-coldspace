@@ -8,15 +8,23 @@
     <body>
         <div class="container">
             <h1>Cadastro de Usuários</h1>
+            {% if usuario_logado %}
+                <p>Olá, **{{ usuario_logado }}**! | <a href="/pedidos">Meus Pedidos</a> | <a href="/logout">Logout</a></p>
+            {% else %}
+                <p><a href="/login">Fazer Login</a></p>
+            {% endif %}
+
                 <form method="post" action="/adicionar" class="form">
                     <input name="nome" placeholder="Nome" required>
                     <input name="idade" type="number" placeholder="Idade" required>
+                    <input name="email" type="email" placeholder="Email" required>
+                    <input name="senha" type="password" placeholder="Senha" required>
                     <button type="submit">Adicionar</button>
                 </form>
                 <ul class="list">
                 {% for u in usuarios %}
                     <li>
-                        <span class="user">{{ u.nome }} ({{ u.idade }} anos)</span>
+                        <span class="user">{{ u.nome }} ({{ u.idade }} anos) - {{ u.email }}</span>
                         <div>
                             <a class="edit" href="/editar/{{ u.id }}">✏️ Editar</a>
                             <a class="delete" href="/deletar/{{ u.id }}">🗑️ Deletar</a>

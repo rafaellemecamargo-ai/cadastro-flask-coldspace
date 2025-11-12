@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalhe do Pedido #{{ pedido.id }}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Detalhe do Pedido #{{ pedido.id }}</h1>
+        <p>Cliente: **{{ pedido.usuario.nome }}**</p>
+        <p>Data do Pedido: **{{ pedido.data_pedido.strftime('%d/%m/%Y %H:%M') }}**</p>
+        <p>Status: **{{ pedido.status }}**</p>
+        
+        <h3 style="margin-top: 20px;">Itens do Pedido:</h3>
+        <ul class="list">
+            {% set total_geral = 0 %}
+            {% for item in pedido.itens %}
+                {% set subtotal = item.quantidade * item.preco_unitario %}
+                {% set total_geral = total_geral + subtotal %}
+                <li>
+                    <span>
+                        <a href="/produto/{{ item.produto.id }}">**{{ item.produto.nome }}**</a>
+                        ({{ item.quantidade }} x R$ {{ "%.2f"|format(item.preco_unitario) }})
+                    </span>
+                    <span>Subtotal: R$ {{ "%.2f"|format(subtotal) }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+        
+        <h2 style="text-align: right; margin-top: 20px;">Total: R$ {{ "%.2f"|format(total_geral) }}</h2>
+
+        <p><a href="/pedidos">← Voltar para Meus Pedidos</a></p>
+        <footer>
+            <p>Projeto de integração: Arquitetura, SO, Banco de Dados e Redes.</p>
+        </footer>
+    </div>
+</body>
+</html>

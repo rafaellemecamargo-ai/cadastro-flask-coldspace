@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalhe do Produto</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>{{ produto.nome }}</h1>
+        <p><strong>Preço:</strong> R$ {{ "%.2f"|format(produto.preco) }}</p>
+        <p><strong>Descrição:</strong> {{ produto.descricao }}</p>
+        
+        <p><a href="/pedidos">← Voltar para Pedidos</a></p>
+        <footer>
+            <p>Projeto de integração: Arquitetura, SO, Banco de Dados e Redes.</p>
+        </footer>
+    </div>
+</body>
+</html>

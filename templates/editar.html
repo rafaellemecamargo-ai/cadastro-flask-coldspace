@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Usuário</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Editar Usuário: {{ usuario.nome }}</h1>
+        <form method="post" class="form" style="flex-direction: column;">
+            <input name="nome" placeholder="Nome" value="{{ usuario.nome }}" required>
+            <input name="idade" type="number" placeholder="Idade" value="{{ usuario.idade }}" required>
+            <input name="email" type="email" placeholder="Email" value="{{ usuario.email }}" required>
+            <button type="submit" style="margin-top: 10px;">Salvar Alterações</button>
+        </form>
+        <p style="text-align: center;"><a href="/">← Voltar para a lista</a></p>
+    </div>
+</body>
+</html>
