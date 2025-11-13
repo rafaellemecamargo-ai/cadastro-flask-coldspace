@@ -7,15 +7,21 @@
 </head>
 <body>
     <div class="container">
+        <div class="secondary-nav">
+            <a href="{{ url_for('cadastro_usuarios') }}">← Voltar</a>
+            <span>Meus Pedidos</span>
+            <a class="logout-link" href="{{ url_for('logout') }}">Logout →</a>
+        </div>
+
         <h1>Meus Pedidos</h1>
-        <p><a href="/logout">Logout</a> | <a href="/">Voltar para a Home</a></p>
+        
         <ul class="list">
         {% for pedido in pedidos %}
             <li>
-                <span class="user">Pedido #{{ pedido.id }} ({{ pedido.data_pedido.strftime('%d/%m/%Y %H:%M') }})</span>
+                <span class="user">Pedido #{{ pedido.id }} ({{ pedido.data_pedido.strftime('%d/%m/%Y - %H:%M') }})</span>
                 <div>
                     Status: **{{ pedido.status }}**
-                    <a class="edit" href="/pedido/{{ pedido.id }}">Detalhes</a>
+                    <a class="ver-pedido-button" href="{{ url_for('detalhe_pedido', id=pedido.id) }}">Ver itens</a>
                 </div>
             </li>
             {% else %}
