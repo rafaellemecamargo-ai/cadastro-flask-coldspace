@@ -1,78 +1,8 @@
-from flask import Flask, render_template, request, redirect
-from flask_sqlalchemy import SQLAlchemy
-import os
-from datetime import datetime
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///usuarios.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db = SQLAlchemy(app)
-
-class Usuario(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(100), nullable=False)
-    idade = db.Column(db.Integer, nullable=False)
-    data_criacao = db.Column(db.DateTime, default=datetime.utcnow)
-
-with app.app_context():
-    db.create_all()
-
-@app.route('/')
-def home():
-    usuarios = Usuario.query.all()
-    return render_template('index.html', usuarios=usuarios)
-
-@app.route('/adicionar', methods=['POST'])
-def adicionar():
-    nome = request.form.get('nome', '').strip()
-    idade = request.form.get('idade', '').strip()
-    try:
-        idade = int(idade)
-    except ValueError:
-        idade = None
-
-    if nome and isinstance(idade, int) and idade >= 0:
-        novo_usuario = Usuario(nome=nome, idade=idade)
-        db.session.add(novo_usuario)
-        db.session.commit()
-        return redirect('/')
-    
-@app.route('/editar/<int:id>', methods=['GET', 'POST'])
-def editar(id):
-    usuario = Usuario.query.get_or_404(id)
-    if request.method == 'POST':
-        nome = request.form.get('nome', '').strip()
-        idade = request.form.get('idade', '').strip()
-        try:
-            idade = int(idade)
-        except ValueError:
-            idade = None
-        
-        if nome and isinstance(idade, int) and idade >= 0:
-            usuario.nome = nome
-            usuario.idade = idade
-            db.session.commit()
-        return redirect('/')
-    return render_template('editar.html', usuario=usuario)
-
-@app.route('/deletar/<int:id>')
-def deletar(id):
-    usuario = Usuario.query.get_or_404(id)
-    db.session.delete(usuario)
-    db.session.commit()
-    return redirect('/')
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.getenv("PORT", 5000)), debug=True)
-
-# ATUALIZAÇÃO
-
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 import os
 from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash # Importação de segurança
+from werkzeug.security import generate_password_hash, check_password_hash 
 
 app = Flask(__name__)
 # Chave secreta é necessária para usar a sessão do Flask (essencial para login)
@@ -88,11 +18,9 @@ class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
     idade = db.Column(db.Integer, nullable=False)
-    email = db.Column(db.String(100), unique=True, nullable=False) # Novo campo
-    senha_hash = db.Column(db.String(255), nullable=False) # Novo campo (Hash da Senha)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    senha_hash = db.Column(db.String(255), nullable=False)
     data_criacao = db.Column(db.DateTime, default=datetime.utcnow)
-
-    # Relacionamento de volta para Pedidos (backref='pedidos')
 
 class Produto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -116,7 +44,7 @@ class ItemPedido(db.Model):
     preco_unitario = db.Column(db.Float, nullable=False)
     
     pedido = db.relationship('Pedido', backref=db.backref('itens', lazy=True))
-    produto = db.relationship('Produto') # Relação para acessar os detalhes do produto
+    produto = db.relationship('Produto')
 
 # --- Inicialização do DB e População de Dados (para teste) ---
 
@@ -141,7 +69,7 @@ def popular_dados_iniciais():
         if admin_user and produto1 and produto2:
             pedido1 = Pedido(usuario_id=admin_user.id, status='Entregue')
             db.session.add(pedido1)
-            db.session.flush() # Força a inserção para obter o ID do pedido
+            db.session.flush()
 
             item1 = ItemPedido(pedido_id=pedido1.id, produto_id=produto1.id, quantidade=1, preco_unitario=produto1.preco)
             item2 = ItemPedido(pedido_id=pedido1.id, produto_id=produto2.id, quantidade=2, preco_unitario=produto2.preco)
@@ -150,7 +78,7 @@ def popular_dados_iniciais():
 
 with app.app_context():
     db.create_all()
-    popular_dados_iniciais() # Popula dados para teste
+    popular_dados_iniciais()
 
 # --- Rotas de Autenticação ---
 
@@ -184,7 +112,7 @@ def logout():
     session.pop('usuario_nome', None)
     return redirect(url_for('home'))
 
-# --- Rotas de Pedidos e Detalhes ---
+# --- Rotas de Pedidos e Detalhes (Read) ---
 
 @app.route('/pedidos')
 @login_required
@@ -209,9 +137,8 @@ def detalhe_produto(id):
     return render_template('detalhe_produto.html', produto=produto)
 
 
-# --- Rotas de CRUD de Usuários (Mantidas e Atualizadas) ---
+# --- Rotas de CRUD de Usuários (Create, Read, Update, Delete) ---
 
-# Rota Home agora passa a variável de sessão para o template
 @app.route('/')
 def home():
     usuarios = Usuario.query.all()
@@ -221,8 +148,8 @@ def home():
 def adicionar():
     nome = request.form.get('nome', '').strip()
     idade = request.form.get('idade', '').strip()
-    email = request.form.get('email', '').strip() # Novo campo
-    senha = request.form.get('senha', '') # Novo campo
+    email = request.form.get('email', '').strip()
+    senha = request.form.get('senha', '')
     
     try:
         idade = int(idade)
@@ -235,7 +162,7 @@ def adicionar():
         try:
             db.session.add(novo_usuario)
             db.session.commit()
-        except Exception: # Trata erro de email duplicado (unique=True)
+        except Exception:
             return "Erro: Email já cadastrado ou dados inválidos.", 400
         return redirect('/')
     
@@ -256,7 +183,6 @@ def editar(id):
             usuario.nome = nome
             usuario.idade = idade
             usuario.email = email
-            # Não permite alterar a senha por esta rota, para simplificar.
             
             try:
                 db.session.commit()
@@ -274,5 +200,4 @@ def deletar(id):
     return redirect('/')
 
 if __name__ == '__main__':
-    # A porta padrão foi movida para o run.sh para evitar conflito com variáveis de ambiente do Coldspace.
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=int(os.getenv("PORT", 5000)), debug=True)
