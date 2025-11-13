@@ -14,38 +14,83 @@ body {
 h1 { text-align: center; color: #333; }
 h3 { color: #555; margin-top: 20px; }
 p { margin-bottom: 10px; }
+label { font-weight: bold; display: block; margin-bottom: 5px; color: #555; }
 
-/* Estilo para formulários de cadastro/login */
-.form { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+/* --- Estilos de Navegação --- */
+
+/* Header da tela de Cadastro (Tela 2) */
+.header-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.header-nav h1 {
+    text-align: left;
+    margin: 0;
+}
+.header-nav p {
+    margin: 0;
+    text-align: right;
+}
+.header-nav .logout-link {
+    font-size: 16px;
+    color: #007bff; 
+    text-decoration: none;
+    transition: color 0.3s;
+    font-weight: bold;
+}
+.header-nav .logout-link:hover {
+    color: #0056b3;
+}
+
+/* Navegação secundária (Telas 3, 4, 5 e Editar) */
+.secondary-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+.secondary-nav a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+.secondary-nav span {
+    font-weight: bold;
+    color: #333;
+}
+
+
+/* --- Estilo para formulários e botões --- */
+.form { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: stretch; }
 .form input { 
     flex: 1; 
-    min-width: 150px;
-    padding: 10px;
+    min-width: 150px; 
+    padding: 10px; 
     border: 1px solid #ccc; 
     border-radius: 4px; 
 }
-.form button { 
+
+.form button, .sign-in-button {
     background-color: #4CAF50; 
     color: white; 
     border: none; 
-    padding: 10px 15px;
-    border-radius: 4px; 
-    cursor: pointer; 
+    padding: 10px 15px; 
+    border-radius: 6px; 
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
     transition: background-color 0.3s;
 }
-.form button:hover {
+.form button:hover, .sign-in-button:hover {
     background-color: #45a049;
 }
-/* Para erros de login */
-.container p[style*="color: red"] {
-    border: 1px solid red;
-    padding: 10px;
-    border-radius: 4px;
-    background-color: #ffe8e8;
-    font-weight: bold;
-}
 
-/* Estilo para listas (Pedidos, Usuários, Itens) */
+
+/* --- Estilos de Listagem --- */
 .list { list-style: none; padding: 0; }
 .list li { 
     padding: 10px 6px; 
@@ -56,20 +101,25 @@ p { margin-bottom: 10px; }
     flex-wrap: wrap;
 }
 .list li:last-child { border-bottom: none; }
-.list li:nth-child(even) { background-color: #fafafa; }
+.list li:nth-child(even) { background-color: #fafafa; } 
 
 .list li span.user { font-weight: bold; color: #333; }
 
-/* Estilos para Botões de Ação na Lista */
-.list li div { display: flex; gap: 10px; margin-top: 5px; }
+.list li div { display: flex; gap: 10px; margin-top: 5px; align-items: center; }
 
-.delete { 
-    color: #c00; 
-    text-decoration: none; 
-    font-size: 14px; 
-    transition: color 0.3s;
+/* Botão "Ver pedido" */
+.ver-pedido-button {
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.3s;
 }
-.delete:hover { color: #ff3333; }
+.ver-pedido-button:hover {
+    background-color: #0056b3;
+}
 
 .edit {
     color: #007bff;
@@ -79,20 +129,51 @@ p { margin-bottom: 10px; }
 }
 .edit:hover { color: #0056b3; }
 
-/* Estilo para links de Detalhes em Pedidos */
-a.edit[href*="/pedido/"], a.edit[href*="/produto/"] {
-    color: #2196F3;
+.delete { 
+    color: #c00; 
+    text-decoration: none; 
+    font-size: 14px; 
+    transition: color 0.3s;
+}
+.delete:hover { color: #ff3333; }
+
+/* Mensagem de erro de login */
+.error-message {
+    border: 1px solid red;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #ffe8e8;
     font-weight: bold;
 }
-a.edit[href*="/pedido/"]:hover { color: #0b7dda; }
 
-
-/* Destaque para o Total do Pedido */
-.container h2[style*="text-align: right"] {
-    padding: 15px;
-    border-top: 2px solid #333;
-    color: #4CAF50;
-    font-size: 1.8em;
+/* --- Estilo para Paginação --- */
+.pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+.pagination a, .pagination span {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 0 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #333;
+    transition: background-color 0.3s;
+}
+.pagination a:hover {
+    background-color: #eee;
+}
+.pagination .current-page {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    font-weight: bold;
+}
+.pagination .disabled {
+    color: #ccc;
+    cursor: not-allowed;
 }
 
+/* Footer */
 footer { margin-top: 20px; font-size: 13px; color: #666; text-align: center; }

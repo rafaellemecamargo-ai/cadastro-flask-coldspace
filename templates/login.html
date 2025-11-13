@@ -2,22 +2,41 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Faça seu login</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Login de Acesso</h1>
+        <h1>Faça seu login</h1>
         <form method="post" class="form" style="flex-direction: column;">
             {% if erro %}
-                <p style="color: red; text-align: center;">{{ erro }}</p>
+                <p class="error-message">{{ erro }}</p>
             {% endif %}
-            <input name="email" type="email" placeholder="Email" required>
-            <input name="senha" type="password" placeholder="Senha" required>
-            <button type="submit" style="margin-top: 10px;">Entrar</button>
+            
+            <label for="email">E-mail</label>
+            <input id="email" name="email" type="email" placeholder="Seu e-mail" required>
+            
+            <label for="senha" style="margin-top: 10px;">Senha</label>
+            <input id="senha" name="senha" type="password" placeholder="Sua senha" required>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                <label style="font-size: 14px; display: flex; align-items: center; gap: 5px;">
+                    <input type="checkbox" name="manter_conectado">
+                    Mantenha-me conectado
+                </label>
+                <a href="#" style="font-size: 14px;">Esqueceu a senha?</a>
+            </div>
+
+            <button type="submit" class="sign-in-button" style="margin-top: 20px; width: 100%;">Sign In</button>
         </form>
-        <p style="text-align: center;"><a href="/">← Voltar para a Home</a></p>
-        <p style="text-align: center; font-size: 14px;">Usuário de teste: **admin@site.com** | Senha: **123**</p>
+        
+        <p style="text-align: center; margin-top: 15px;">
+            Não tem uma conta? <a href="#">Criar uma conta</a>
+        </p>
+
+        <p style="text-align: center; font-size: 14px; margin-top: 20px;">
+            Usuário de teste: **admin@site.com** | Senha: **123**
+        </p>
     </div>
 </body>
 </html>

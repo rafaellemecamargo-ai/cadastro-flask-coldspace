@@ -2,16 +2,21 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Detalhe do Produto</title>
+    <title>{{ produto.nome }}</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div class="container">
+        <div class="secondary-nav">
+            <a href="{{ url_for('pedidos_lista') }}">← Voltar</a>
+            <span>{{ produto.nome }}</span>
+            <a class="logout-link" href="{{ url_for('logout') }}">Logout →</a>
+        </div>
+
         <h1>{{ produto.nome }}</h1>
         <p><strong>Preço:</strong> R$ {{ "%.2f"|format(produto.preco) }}</p>
         <p><strong>Descrição:</strong> {{ produto.descricao }}</p>
         
-        <p><a href="/pedidos">← Voltar para Pedidos</a></p>
         <footer>
             <p>Projeto de integração: Arquitetura, SO, Banco de Dados e Redes.</p>
         </footer>
