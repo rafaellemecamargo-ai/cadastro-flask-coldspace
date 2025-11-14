@@ -18,7 +18,7 @@ label { font-weight: bold; display: block; margin-bottom: 5px; color: #555; }
 
 /* --- Estilos de Navegação --- */
 
-/* Header da tela de Cadastro */
+/* Header da tela de Cadastro (Tela 2) */
 .header-nav {
     display: flex;
     justify-content: space-between;
@@ -44,7 +44,7 @@ label { font-weight: bold; display: block; margin-bottom: 5px; color: #555; }
     color: #0056b3;
 }
 
-/* Navegação secundária */
+/* Navegação secundária (Telas 3, 4, 5 e Editar) */
 .secondary-nav {
     display: flex;
     justify-content: space-between;
@@ -67,7 +67,7 @@ label { font-weight: bold; display: block; margin-bottom: 5px; color: #555; }
 /* --- Estilo para formulários e botões genéricos --- */
 .form { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: stretch; }
 .form input { 
-    flex: unset;
+    flex: unset; 
     min-width: unset; 
     padding: 10px; 
     border: 1px solid #ccc; 
@@ -103,7 +103,8 @@ label { font-weight: bold; display: block; margin-bottom: 5px; color: #555; }
 .list li:last-child { border-bottom: none; }
 .list li:nth-child(even) { background-color: #fafafa; } 
 
-.list li span.user { font-weight: bold; color: #333; }
+.list li span.user { color: #333; }
+.list li span.user b { font-weight: bold; }
 
 .list li div { display: flex; gap: 10px; margin-top: 5px; align-items: center; }
 
@@ -178,39 +179,101 @@ label { font-weight: bold; display: block; margin-bottom: 5px; color: #555; }
 /* Footer */
 footer { margin-top: 20px; font-size: 13px; color: #666; text-align: center; }
 
+/* --- NOVOS AJUSTES ESPECÍFICOS PARA O FORMULÁRIO DE ADICIONAR USUÁRIO --- */
 .add-user-form {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
+    display: grid;
+    /* 1. Campos Nome e E-mail iguais (long-equal) */
+    grid-template-columns: 3fr 1fr 3fr auto; 
     gap: 15px;
+    align-items: flex-end;
 }
-
 .add-user-form .form-group {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
-    min-width: 120px;
+}
+/* Força Nome e E-mail a terem a mesma largura (3fr) */
+.add-user-form .form-group.long-equal {
+    grid-column: span 1;
 }
 
 .add-user-form .form-group.short-input {
-    flex-grow: 0;
-    width: 80px;
+    width: 80px; /* Largura fixa para Idade */
 }
-
 .add-user-form input {
-    width: 100%;
-    box-sizing: border-box;
-    height: 44px;
+    width: 100%; 
+    box-sizing: border-box; 
+    height: 44px; 
 }
-
 .add-user-form .add-button {
-    height: 44px;
-    padding: 0 20px;
-    margin-bottom: 0;
-    flex-shrink: 0;
+    height: 44px; 
+    padding: 0 20px; 
+    margin-bottom: 0; 
+    flex-shrink: 0; 
 }
 
-/* Garante que o label esteja correto para todos os inputs */
-.form label {
-    margin-bottom: 5px;
+/* --- Estilos para Busca e Ordenação --- */
+.users-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.users-header h3 {
+    margin-bottom: 0;
+}
+.search-form {
+    display: flex;
+    gap: 5px;
+}
+.search-form input[type="text"] {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 180px;
+    height: 38px;
+    box-sizing: border-box;
+}
+.search-form .search-button {
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    color: #333;
+    padding: 8px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    height: 38px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sort-links {
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #555;
+}
+.sort-links a {
+    margin-left: 10px;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+.sort-links a:hover {
+    text-decoration: underline;
+}
+
+/* Responsividade básica */
+@media (max-width: 600px) {
+    .add-user-form {
+        grid-template-columns: 1fr 1fr; 
+    }
+    .add-user-form .form-group.long-equal {
+        grid-column: span 2;
+    }
+    .add-user-form .add-button {
+        grid-column: span 2;
+        width: 100%;
+    }
 }

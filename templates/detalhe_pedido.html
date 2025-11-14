@@ -18,6 +18,7 @@
         
         <h3 style="margin-top: 20px;">Informações Adicionais:</h3>
         <p>Cliente: **{{ pedido.usuario.nome }}**</p>
+        <p>E-mail: **{{ pedido.usuario.email }}**</p> 
         <p>Data da compra: **{{ pedido.data_pedido.strftime('%d/%m/%Y - %H:%M') }}**</p>
         
         <h3 style="margin-top: 20px;">Itens do pedido:</h3>

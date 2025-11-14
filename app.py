@@ -79,10 +79,10 @@ def popular_dados_iniciais():
 
 # Adiciona 5 usuários fictícios para testar a paginação
     if Usuario.query.count() < 6:
-        for i in range(1, 6):
-            if not Usuario.query.filter_by(email=f'usuario{i}@temp.com').first():
+        for i, nome_ficticio in enumerate(['Ana Silva', 'Bruno Mendes', 'Carla Souza', 'David Lima', 'Erica Santos']):
+            if not Usuario.query.filter_by(email=f'usuario{i+1}@temp.com').first():
                 senha_hashed = generate_password_hash('123', method='pbkdf2:sha256')
-                temp_user = Usuario(nome=f'Usuário Fictício {i}', idade=20+i, email=f'usuario{i}@temp.com', senha_hash=senha_hashed)
+                temp_user = Usuario(nome=nome_ficticio, idade=20+i, email=f'usuario{i+1}@temp.com', senha_hash=senha_hashed)
                 db.session.add(temp_user)
         db.session.commit()
 
@@ -105,7 +105,7 @@ def login_required(f):
 
 @app.route('/', methods=['GET', 'POST'])
 def login_page():
-    # Se já estiver logado, redireciona para o cadastro
+    # Tela 1: Login
     if 'usuario_id' in session:
         return redirect(url_for('cadastro_usuarios'))
 
@@ -118,7 +118,7 @@ def login_page():
         if usuario and check_password_hash(usuario.senha_hash, senha):
             session['usuario_id'] = usuario.id
             session['usuario_nome'] = usuario.nome
-            # Redireciona para o cadastro de usuários após o login
+            # Redireciona para o cadastro (Tela 2) após o login
             return redirect(url_for('cadastro_usuarios'))
         
         return render_template('login.html', erro='Email ou senha incorretos.')
@@ -137,11 +137,33 @@ def logout():
 @app.route('/cadastro')
 @login_required
 def cadastro_usuarios():
-    # Implementação de paginação (5 itens por página)
+    # Parâmetros de Filtro e Ordenação
+    search_query = request.args.get('q', '')
+    sort_by = request.args.get('sort', 'nome') # Padrão: nome
+    direction = request.args.get('direction', 'asc') # Padrão: ascendente
     page = request.args.get('page', 1, type=int)
     per_page = 5 
+    
+    query = Usuario.query
+    
+    # 1. Filtro de Busca (por Nome)
+    if search_query:
+        query = query.filter(Usuario.nome.ilike(f'%{search_query}%'))
+        
+    # 2. Ordenação
+    if sort_by == 'nome':
+        if direction == 'desc':
+            query = query.order_by(Usuario.nome.desc())
+        else:
+            query = query.order_by(Usuario.nome.asc())
+    elif sort_by == 'idade':
+        if direction == 'desc':
+            query = query.order_by(Usuario.idade.desc())
+        else:
+            query = query.order_by(Usuario.idade.asc())
 
-    pagination = Usuario.query.order_by(Usuario.id).paginate(
+    # 3. Paginação
+    pagination = query.paginate(
         page=page, per_page=per_page, error_out=False
     )
     
@@ -149,7 +171,10 @@ def cadastro_usuarios():
         'cadastro_usuarios.html', 
         usuarios=pagination.items, 
         pagination=pagination, 
-        usuario_logado=session.get('usuario_nome')
+        usuario_logado=session.get('usuario_nome'),
+        search_query=search_query,
+        sort_by=sort_by,
+        direction=direction
     )
 
 @app.route('/adicionar', methods=['POST'])
@@ -157,27 +182,29 @@ def cadastro_usuarios():
 def adicionar():
     nome = request.form.get('nome', '').strip()
     idade = request.form.get('idade', '').strip()
+    email = request.form.get('email', '').strip() 
     
     try:
         idade = int(idade)
     except ValueError:
         idade = None
 
-    if nome and isinstance(idade, int) and idade >= 0:
-        # Cria um email único e uma senha padrão para satisfazer o DB
-        base_email = f"{nome.lower().replace(' ', '_')[:20]}"
-        email = f"{base_email}_{datetime.now().strftime('%f')}@temp.com"
-        senha_hashed = generate_password_hash("temp_password", method='pbkdf2:sha256')
+    if nome and isinstance(idade, int) and idade >= 0 and email:
+        senha_hashed = generate_password_hash("novasenha123", method='pbkdf2:sha256') 
 
         novo_usuario = Usuario(nome=nome, idade=idade, email=email, senha_hash=senha_hashed)
         try:
             db.session.add(novo_usuario)
             db.session.commit()
         except Exception:
-            return "Erro: Falha ao adicionar usuário. Tente novamente.", 400
+            # Trata erro de email duplicado (unique=True)
+            return "Erro: Email já cadastrado ou dados inválidos.", 400
             
         return redirect(url_for('cadastro_usuarios'))
     
+    return "Erro: Dados incompletos ou inválidos.", 400
+
+
 @app.route('/editar/<int:id>', methods=['GET', 'POST'])
 @login_required 
 def editar(id):
@@ -185,22 +212,27 @@ def editar(id):
     if request.method == 'POST':
         nome = request.form.get('nome', '').strip()
         idade = request.form.get('idade', '').strip()
+        email = request.form.get('email', '').strip() # NOVO: Captura o email
         
         try:
             idade = int(idade)
         except ValueError:
             idade = None
         
-        if nome and isinstance(idade, int) and idade >= 0:
+        # NOVO: Verifica se o email é válido
+        if nome and isinstance(idade, int) and idade >= 0 and email:
             usuario.nome = nome
             usuario.idade = idade
+            usuario.email = email # NOVO: Atualiza o email
             
             try:
                 db.session.commit()
             except Exception:
-                return "Erro: Falha ao atualizar dados.", 400
+                # Retorna erro se o email for duplicado
+                return "Erro: Falha ao atualizar dados. O e-mail pode já estar em uso.", 400
                 
         return redirect(url_for('cadastro_usuarios'))
+    # Tela 6: Editar Usuário
     return render_template('editar.html', usuario=usuario)
 
 @app.route('/deletar/<int:id>')
@@ -208,8 +240,8 @@ def editar(id):
 def deletar(id):
     usuario = Usuario.query.get_or_404(id)
     
-    if usuario.id == session.get('usuario_id'):
-        return "Você não pode deletar sua própria conta de administrador.", 403
+    if usuario.id == 1:
+        return "Você não pode deletar este usuário de teste.", 403
 
     db.session.delete(usuario)
     db.session.commit()
@@ -220,18 +252,16 @@ def deletar(id):
 @app.route('/pedidos')
 @login_required
 def pedidos_lista():
-    # Rota para os pedidos do usuário logado (Admin)
+    # Lista de pedidos do Admin logado
     usuario_logado_id = session['usuario_id']
     pedidos = Pedido.query.filter_by(usuario_id=usuario_logado_id).order_by(Pedido.data_pedido.desc()).all()
+    # Tela 3: Detalhes do Pedido (Adaptado para lista)
     return render_template('pedidos.html', pedidos=pedidos, usuario_alvo=None) 
 
 @app.route('/pedidos_usuario/<int:user_id>')
 @login_required
 def pedidos_usuario(user_id):
-    # Rota para o Admin ver os pedidos de um usuário específico
-    usuario = Usuario.query.get_or_404(user_id)
-    # Para o teste, vamos apenas redirecionar para a lista do Admin, 
-    # já que só ele tem pedidos populados para demonstração.
+    # A rota "Ver pedido" redireciona para a lista de pedidos do Admin por simplicidade.
     return redirect(url_for('pedidos_lista')) 
 
 
@@ -239,11 +269,13 @@ def pedidos_usuario(user_id):
 @login_required
 def detalhe_pedido(id):
     pedido = Pedido.query.get_or_404(id)
+    # Tela 4: Detalhes do pedido
     return render_template('detalhe_pedido.html', pedido=pedido)
 
 @app.route('/produto/<int:id>')
 def detalhe_produto(id):
     produto = Produto.query.get_or_404(id)
+    # Tela 5: Detalhes do Produto
     return render_template('detalhe_produto.html', produto=produto)
 
 

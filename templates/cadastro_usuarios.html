@@ -9,14 +9,14 @@
         <div class="container">
             <div class="header-nav">
                 <h1>Cadastrar usuário</h1>
-                <p>Olá, **{{ usuario_logado }}**! | <a class="logout-link" href="{{ url_for('logout') }}">Logout →</a></p>
+                <p>Olá, **{{ usuario_logado }}**! | <a class="logout-link" href="{{ url_for('logout') }}">Logout</a></p>
             </div>
             
             <h3>Adicionar novo usuário</h3>
             
             <form method="post" action="{{ url_for('adicionar') }}" class="form add-user-form">
                 
-                <div class="form-group">
+                <div class="form-group long-equal">
                     <label for="nome">Nome</label>
                     <input id="nome" name="nome" placeholder="Nome" required>
                 </div>
@@ -26,15 +26,47 @@
                     <input id="idade" name="idade" type="number" placeholder="Idade" required>
                 </div>
                 
+                <div class="form-group long-equal">
+                    <label for="email">E-mail</label>
+                    <input id="email" name="email" type="email" placeholder="E-mail" required>
+                </div>
+                
                 <button type="submit" class="add-button">Adicionar</button>
             </form>
             
-            <h3>Usuários cadastrados</h3>
+            <div class="users-header">
+                <h3>Usuários cadastrados</h3>
+                
+                <form method="GET" class="search-form">
+                    <input type="text" name="q" placeholder="Pesquisar por nome" value="{{ search_query }}">
+                    <button type="submit" class="search-button">🔍</button>
+                    
+                    <input type="hidden" name="sort" value="{{ sort_by }}">
+                    <input type="hidden" name="direction" value="{{ direction }}">
+                </form>
+            </div>
             
+            <div class="sort-links">
+                Ordenar por:
+                {% set new_direction_name = 'desc' if sort_by == 'nome' and direction == 'asc' else 'asc' %}
+                <a href="{{ url_for('cadastro_usuarios', q=search_query, sort='nome', direction=new_direction_name) }}">
+                    Nome {% if sort_by == 'nome' %}
+                        {% if direction == 'asc' %} ▲ {% else %} ▼ {% endif %}
+                    {% endif %}
+                </a>
+                
+                {% set new_direction_idade = 'desc' if sort_by == 'idade' and direction == 'asc' else 'asc' %}
+                <a href="{{ url_for('cadastro_usuarios', q=search_query, sort='idade', direction=new_direction_idade) }}">
+                    Idade {% if sort_by == 'idade' %}
+                        {% if direction == 'asc' %} ▲ {% else %} ▼ {% endif %}
+                    {% endif %}
+                </a>
+            </div>
+
             <ul class="list">
             {% for u in usuarios %}
                 <li>
-                    <span class="user">**{{ u.nome }}** ({{ u.idade }} anos)</span>
+                    <span class="user">{{ u.nome }} ({{ u.idade }} anos)</span>
                     <div>
                         <a class="ver-pedido-button" href="{{ url_for('pedidos_lista') }}">Ver pedido</a>
                         <a class="edit" href="{{ url_for('editar', id=u.id) }}">Editar</a>
@@ -48,7 +80,7 @@
 
             <div class="pagination">
                 {% if pagination.has_prev %}
-                    <a href="{{ url_for('cadastro_usuarios', page=pagination.prev_num) }}">← Previous</a>
+                    <a href="{{ url_for('cadastro_usuarios', page=pagination.prev_num, q=search_query, sort=sort_by, direction=direction) }}">← Previous</a>
                 {% else %}
                     <span class="disabled">← Previous</span>
                 {% endif %}
@@ -58,7 +90,7 @@
                         {% if page_num == pagination.page %}
                             <span class="current-page">{{ page_num }}</span>
                         {% else %}
-                            <a href="{{ url_for('cadastro_usuarios', page=page_num) }}">{{ page_num }}</a>
+                            <a href="{{ url_for('cadastro_usuarios', page=page_num, q=search_query, sort=sort_by, direction=direction) }}">{{ page_num }}</a>
                         {% endif %}
                     {% else %}
                         <span>...</span>
@@ -66,7 +98,7 @@
                 {% endfor %}
 
                 {% if pagination.has_next %}
-                    <a href="{{ url_for('cadastro_usuarios', page=pagination.next_num) }}">Next →</a>
+                    <a href="{{ url_for('cadastro_usuarios', page=pagination.next_num, q=search_query, sort=sort_by, direction=direction) }}">Next →</a>
                 {% else %}
                     <span class="disabled">Next →</span>
                 {% endif %}
