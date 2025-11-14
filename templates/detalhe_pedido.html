@@ -10,7 +10,7 @@
         <div class="secondary-nav">
             <a href="{{ url_for('pedidos_lista') }}">← Voltar</a>
             <span>Detalhes do pedido</span>
-            <a class="logout-link" href="{{ url_for('logout') }}">Logout →</a>
+            <a class="logout-link" href="{{ url_for('logout') }}">Logout</a>
         </div>
 
         <h1>Pedido #{{ pedido.id }} | {{ pedido.data_pedido.strftime('%d/%m/%Y - %H:%M') }}</h1>
