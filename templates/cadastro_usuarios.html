@@ -9,14 +9,24 @@
         <div class="container">
             <div class="header-nav">
                 <h1>Cadastrar usuário</h1>
-                <p>Olá, **{{ usuario_logado }}**! | <a class="logout-link" href="{{ url_for('logout') }}">Logout</a></p>
+                <p>Olá, **{{ usuario_logado }}**! | <a class="logout-link" href="{{ url_for('logout') }}">Logout →</a></p>
             </div>
             
             <h3>Adicionar novo usuário</h3>
-            <form method="post" action="{{ url_for('adicionar') }}" class="form" style="display: flex; flex-direction: row; align-items: stretch;">
-                <input name="nome" placeholder="Nome" required>
-                <input name="idade" type="number" placeholder="Idade" required style="max-width: 100px;">
-                <button type="submit">Adicionar</button>
+            
+            <form method="post" action="{{ url_for('adicionar') }}" class="form add-user-form">
+                
+                <div class="form-group">
+                    <label for="nome">Nome</label>
+                    <input id="nome" name="nome" placeholder="Nome" required>
+                </div>
+
+                <div class="form-group short-input">
+                    <label for="idade">Idade</label>
+                    <input id="idade" name="idade" type="number" placeholder="Idade" required>
+                </div>
+                
+                <button type="submit" class="add-button">Adicionar</button>
             </form>
             
             <h3>Usuários cadastrados</h3>
@@ -24,7 +34,7 @@
             <ul class="list">
             {% for u in usuarios %}
                 <li>
-                    <span class="user">{{ u.nome }} {{ u.idade }} anos</span>
+                    <span class="user">**{{ u.nome }}** ({{ u.idade }} anos)</span>
                     <div>
                         <a class="ver-pedido-button" href="{{ url_for('pedidos_lista') }}">Ver pedido</a>
                         <a class="edit" href="{{ url_for('editar', id=u.id) }}">Editar</a>

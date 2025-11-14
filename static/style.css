@@ -18,7 +18,7 @@ label { font-weight: bold; display: block; margin-bottom: 5px; color: #555; }
 
 /* --- Estilos de Navegação --- */
 
-/* Header da tela de Cadastro (Tela 2) */
+/* Header da tela de Cadastro */
 .header-nav {
     display: flex;
     justify-content: space-between;
@@ -44,7 +44,7 @@ label { font-weight: bold; display: block; margin-bottom: 5px; color: #555; }
     color: #0056b3;
 }
 
-/* Navegação secundária (Telas 3, 4, 5 e Editar) */
+/* Navegação secundária */
 .secondary-nav {
     display: flex;
     justify-content: space-between;
@@ -64,11 +64,11 @@ label { font-weight: bold; display: block; margin-bottom: 5px; color: #555; }
 }
 
 
-/* --- Estilo para formulários e botões --- */
+/* --- Estilo para formulários e botões genéricos --- */
 .form { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: stretch; }
 .form input { 
-    flex: 1; 
-    min-width: 150px; 
+    flex: unset;
+    min-width: unset; 
     padding: 10px; 
     border: 1px solid #ccc; 
     border-radius: 4px; 
@@ -177,3 +177,40 @@ label { font-weight: bold; display: block; margin-bottom: 5px; color: #555; }
 
 /* Footer */
 footer { margin-top: 20px; font-size: 13px; color: #666; text-align: center; }
+
+.add-user-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 15px;
+}
+
+.add-user-form .form-group {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-width: 120px;
+}
+
+.add-user-form .form-group.short-input {
+    flex-grow: 0;
+    width: 80px;
+}
+
+.add-user-form input {
+    width: 100%;
+    box-sizing: border-box;
+    height: 44px;
+}
+
+.add-user-form .add-button {
+    height: 44px;
+    padding: 0 20px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+}
+
+/* Garante que o label esteja correto para todos os inputs */
+.form label {
+    margin-bottom: 5px;
+}
